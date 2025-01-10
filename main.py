@@ -1,42 +1,44 @@
 def main():
-    libro = "/home/edr9/escuela/github.com/elMucaro9/bookbot/books/frankenstein.txt"
-    contenido_del_libro = get_book_text(libro)
-    num_palabras = get_num_words(contenido_del_libro)
-    char_count = count_characters(contenido_del_libro)
+    book = "/home/edr9/escuela/github.com/elMucaro9/bookbot/books/frankenstein.txt" # <--- this is the book path
+    book_content = get_book_text(book)
+    if book_content:
+        num_words = get_num_words(book_content)
+        char_count = count_characters(book_content)
 
-    #Area de Print
-    print(f"{contenido_del_libro}")
-    print("\n=========================================")
-    print(f"\n{num_palabras} palabras found in the document")
-    print("\n=========================================")
-    print(f"Total Count Characters is {char_count}")
+        # Print area
+        print(f"\n>>> Begin report of books/frankenstein.txt >>>")
+        print(f"\n--- {num_words} palabras found in the document ---")
+        print("\n=========================================")
+        print("Character Counts:")
+        for char, count in char_count.items():
+            print(f"  '{char}': {count}")
+        else:
+            print("=========================================")
+            print("\nNo content to process.")
 
-
-def get_num_words(contenido_del_libro):
-    palabras = contenido_del_libro.split()
+# Splits the content into words and counts them.
+def get_num_words(book_content):
+    palabras = book_content.split()
     return len(palabras)
 
+# It uses -get_book_text- to read the content of "frankenstein.txt", returning its content as a string..
+def get_book_text(book):
+    try:
+        with open(book, 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"Error: The file {book} was not found.")
+    except IOError:
+        print(f"Error: Could not read the file {book}.")
+    return ""
 
-def get_book_text(libro):
-    with open(libro) as f:
-        return f.read()
-
-def count_characters(contenido_del_libro):
-    # Convert the entire texto to lowercase to avoid duplicates for case sensitivity
-    texto = contenido_del_libro.lower()
-    
-    # Initialize an empty dictionary to store character counts
+# Counts each character in the text, converting all to lowercase to avoid case sensitivity issues.
+def count_characters(book_content):
+    text = book_content.lower()
     char_count = {}
-    
-    # Loop through each character in the texto
-    for char in texto:
-        # If the character is already in the dictionary, increment its count
-        if char in char_count:
-            char_count[char] += 1
-        else:
-            # If it's not in the dictionary, add it with a count of 1
-            char_count[char] = 1
-    
+    for char in text:
+        if char.isalpha():  # Only count alphabetic characters
+            char_count[char] = char_count.get(char, 0) + 1
     return char_count
 
 main()
